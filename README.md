@@ -1,3 +1,4 @@
+```
 import tkinter as tk
 from tkinter import simpledialog, messagebox, ttk, filedialog
 import pymysql
@@ -569,3 +570,5 @@ INSERT INTO products (name, price, stock, category_id, manufacturer_id, supplier
 ('Ботинки зимние', 5999.00, 0, 1, 2, 2, 'пара', 10, 'Тёплые ботинки', NULL),
 ('Футболка спортивная', 1499.00, 25, 2, 3, 3, 'шт.', 5, 'Дышащая ткань', NULL),
 ('Сумка для обуви', 1299.00, 5, 3, 1, 1, 'шт.', 0, 'Удобная сумка', NULL);"""
+
+```
