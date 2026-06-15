@@ -114,9 +114,9 @@ class App:
     def clear(self):
         for w in self.root.winfo_children():
             w.destroy()
-        for attr in ('search_var', 'combo_cat', 'combo_sup', 'sort_var'):
+        for attr in  ('search_var', 'combo_cat', 'combo_sup', 'sort_var'):
             if hasattr(self, attr):
-                delattr(self, attr)
+                delattr(self,attr)
 
     def login_screen(self):
         self.clear()
@@ -506,6 +506,74 @@ if __name__ == '__main__':
     root.mainloop()
 
 
+CREATE DATABASE IF NOT EXISTS store_db;
+USE store_db;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin','manager','user','guest') NOT NULL,
+    full_name VARCHAR(100) DEFAULT ''
+);
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL	
+);
+
+CREATE TABLE manufacturers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE suppliers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    category_id INT,
+    manufacturer_id INT,
+    supplier_id INT,
+    unit VARCHAR(20) DEFAULT 'шт.',
+    discount DECIMAL(5,2) DEFAULT 0,
+    description TEXT,
+    photo_path VARCHAR(255) DEFAULT NULL,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    FOREIGN KEY (manufacturer_id) REFERENCES manufacturers(id) ON DELETE SET NULL,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL
+);
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','processing','completed','cancelled') DEFAULT 'pending',
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+);
+
+INSERT INTO users (username, password, role, full_name) VALUES
+('admin','admin','admin','Администратор'),
+('manager','manager','manager','Менеджер'),
+('user','user','user','Покупатель');
+
+INSERT INTO categories (name) VALUES ('Обувь'), ('Спорттовары'), ('Аксессуары');
+INSERT INTO manufacturers (name) VALUES ('Nike'), ('Adidas'), ('Puma');
+INSERT INTO suppliers (name) VALUES ('ООО "ОбувьПром"'), ('ИП Иванов'), ('Adidas');
+
+INSERT INTO products (name, price, stock, category_id, manufacturer_id, supplier_id, unit, discount, description, photo_path) VALUES
+('Кроссовки Air Max', 8999.00, 10, 1, 1, 1, 'пара', 20, 'Лёгкие кроссовки для бега', NULL),
+('Ботинки зимние', 5999.00, 0, 1, 2, 2, 'пара', 10, 'Тёплые ботинки', NULL),
+('Футболка спортивная', 1499.00, 25, 2, 3, 3, 'шт.', 5, 'Дышащая ткань', NULL),
+('Сумка для обуви', 1299.00, 5, 3, 1, 1, 'шт.', 0, 'Удобная сумка', NULL);
 
 
 ```
